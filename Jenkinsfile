@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/shadow846/Cloudblade-WebOps.git'
+                git credentialsId: 'github-https', url: 'https://github.com/shadow846/Cloudblade-WebOps.git'
             }
         }
 
