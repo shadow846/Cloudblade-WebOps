@@ -13,7 +13,9 @@ spec:
         app: cloudblade
     spec:
       containers:
-      - name: cloudblade-container
-        image: cloudblade-barista:latest
-        ports:
-        - containerPort: 80
+        - name: cloudblade-container
+          image: cloudblade-barista:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+

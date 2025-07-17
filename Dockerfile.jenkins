@@ -1,0 +1,23 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+# Add Google Cloud public signing key
+RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes.gpg
+
+# Add Kubernetes apt repository (Updated for 2025)
+RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" \
+    > /etc/apt/sources.list.d/kubernetes.list
+
+# Install kubectl
+RUN apt-get update && apt-get install -y kubectl
+
+USER jenkins
+
