@@ -19,6 +19,12 @@ pipeline {
             }
         }
 
+        stage('Build custom Jenkins image') {
+            steps {
+                sh 'docker build -t custom-jenkins:k8s -f Dockerfile.jenkins .'
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 sh """
