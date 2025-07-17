@@ -14,11 +14,12 @@ pipeline {
             }
         }
 
-        stage('Load Image into Minikube') {
-            steps {
-                sh 'minikube image load cloudblade-barista:latest'
-            }
-        }
+        // Skipping minikube image load (Jenkins container can't run this)
+        // stage('Load Image into Minikube') {
+        //     steps {
+        //         sh 'minikube image load cloudblade-barista:latest'
+        //     }
+        // }
 
         stage('Deploy to Kubernetes') {
             steps {
