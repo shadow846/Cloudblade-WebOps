@@ -1,24 +1,31 @@
 pipeline {
     agent any
+
     stages {
-        stage('Checkout') {
+        stage('Clone Repo') {
             steps {
-                git credentialsId: 'your-credential-id', url: 'https://github.com/shadow846/Cloudblade-WebOps.git'
+                git url: 'https://github.com/shadow846/Cloudblade-WebOps.git'
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build('cloudblade-barista')
-                }
+                sh 'docker build -t cloudblade-barista:latest .'
             }
         }
-        stage('Run Docker Container') {
+
+        stage('Load Image into Minikube') {
             steps {
-                script {
-                    docker.image('cloudblade-barista').run('-d -p 8080:80')
-                }
+                sh 'minikube image load cloudblade-barista:latest'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s-deployment.yaml'
+                sh 'kubectl apply -f k8s-service.yaml'
             }
         }
     }
 }
+
