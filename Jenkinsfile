@@ -26,16 +26,16 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                sh """
-                docker run --rm \
-                  -v /var/run/docker.sock:/var/run/docker.sock \
-                  -v \$PWD:/workspace \
-                  custom-jenkins:k8s \
-                  sh -c 'kubectl apply -f /workspace/k8s-deployment.yaml'
-                """
-            }
-        }
+    steps {
+        sh '''
+            docker run --rm \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                -v $(pwd):/workspace \
+                custom-jenkins:k8s sh -c "
+                    echo '📂 Listing files in /workspace:' && ls -l /workspace &&
+                    kubectl apply -f /workspace/k8s-deployment.yaml
+                "
+        '''
     }
 }
 
