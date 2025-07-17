@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudblade-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudblade
+  template:
+    metadata:
+      labels:
+        app: cloudblade
+    spec:
+      containers:
+      - name: cloudblade-container
+        image: cloudblade-barista:latest
+        ports:
+        - containerPort: 80
