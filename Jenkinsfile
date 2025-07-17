@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'cloudblade-barista:latest'
         CUSTOM_JENKINS_IMAGE = 'custom-jenkins:k8s'
+        DEPLOY_PATH = '/home/jenkins/workspace'   // inside container
     }
 
     stages {
@@ -37,21 +38,16 @@ pipeline {
             steps {
                 sh '''
                     set -ex
-                    echo "🔍 Host workspace path: ${WORKSPACE}"
-                    echo "📂 Files in host workspace:"
-                    ls -la ${WORKSPACE}
-
-                    echo "🐳 Running container for kubectl apply"
+                    echo "📦 Mounting workspace: ${WORKSPACE} -> ${DEPLOY_PATH}"
                     docker run --rm \
                         -v /var/run/docker.sock:/var/run/docker.sock \
-                        -v ${WORKSPACE}:/workspace \
+                        -v ${WORKSPACE}:${DEPLOY_PATH} \
                         ${CUSTOM_JENKINS_IMAGE} sh -c '
                             set -ex
-                            echo "📂 Files inside /workspace:"
-                            ls -la /workspace
-
+                            echo "📂 Files inside ${DEPLOY_PATH}:"
+                            ls -la ${DEPLOY_PATH}
                             echo "🚀 Deploying to Kubernetes..."
-                            kubectl apply -f /workspace/k8s-deployment.yaml
+                            kubectl apply -f ${DEPLOY_PATH}/k8s-deployment.yaml
                         '
                 '''
             }
@@ -67,4 +63,3 @@ pipeline {
         }
     }
 }
-
