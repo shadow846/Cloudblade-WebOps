@@ -15,7 +15,19 @@ spec:
       containers:
         - name: cloudblade-container
           image: cloudblade-barista:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudblade-service
+spec:
+  selector:
+    app: cloudblade
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
 
